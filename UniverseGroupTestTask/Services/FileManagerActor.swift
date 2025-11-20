@@ -55,4 +55,18 @@ actor FileManagerActor {
             .appendingPathComponent(fileName)
         return try? Data(contentsOf: fileURL)
     }
+    
+    func listFiles(in folderName: String) async -> [URL] {
+        let folderURL = documentsDirectory().appendingPathComponent(folderName)
+        
+        do {
+            let contents = try fileManager.contentsOfDirectory(at: folderURL,
+                                                               includingPropertiesForKeys: nil,
+                                                               options: [.skipsHiddenFiles])
+            return contents
+        } catch {
+            print("Failed to list files in folder \(folderName): \(error)")
+            return []
+        }
+    }
 }

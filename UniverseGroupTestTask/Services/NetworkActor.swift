@@ -28,6 +28,8 @@ actor NetworkManagerActor: NetworkActorProtocol {
                 userInfo: [NSLocalizedDescriptionKey: "Connection error occurred."]
             )
         }
+        
+        print(String(data: data, encoding: .utf8))
 
         // Validate HTTP response
         guard let http = response as? HTTPURLResponse else {

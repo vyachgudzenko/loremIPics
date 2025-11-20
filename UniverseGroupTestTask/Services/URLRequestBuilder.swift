@@ -93,7 +93,11 @@ class URLRequestBuilder {
     // MARK: - Build request
     func build() throws -> URLRequest {
         guard var baseURL else {
-            throw URLError(.badURL)
+            throw NSError(
+                domain: "Network",
+                code: -3,
+                userInfo: [NSLocalizedDescriptionKey: "Bad URL "]
+            )
         }
         
         for component in pathComponents {

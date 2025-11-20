@@ -7,7 +7,7 @@
 
 import Foundation
 
-actor APIServiceActor {
+actor APIServiceActor: APIServiceProtocol {
     private let networkActor: NetworkActorProtocol
 
     init() async {
@@ -40,3 +40,4 @@ actor APIServiceActor {
         return data
     }
 }
+

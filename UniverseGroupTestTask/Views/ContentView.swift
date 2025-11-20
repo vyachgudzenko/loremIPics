@@ -11,6 +11,7 @@ import CoreData
 struct ContentView: View {
     @State private var results: [PhotoInfo] = []
     @State private var uiImage: UIImage?
+    @StateObject private var viewModel = PhotoInfoViewModel()
 
     var body: some View {
         ScrollView {

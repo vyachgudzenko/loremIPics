@@ -29,4 +29,14 @@ actor APIServiceActor {
         let results: [PhotoInfo] = try await networkActor.sendRequest(request, decodeTo: [PhotoInfo].self)
         return results
     }
+    
+    func getImageDataByID(_ id: String,width: Int = 300,height: Int = 200) async throws -> Data? {
+        let request = try await URLRequestBuilder()
+            .setBaseURLString(APILink.host.rawValue)
+            .addPathComponents([ "id","\(id)",width.description,height.description ])
+            .build()
+
+        let data = await networkActor.sendRawRequest(request)
+        return data
+    }
 }

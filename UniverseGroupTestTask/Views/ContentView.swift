@@ -10,6 +10,7 @@ import CoreData
 
 struct ContentView: View {
     @State private var results: [PhotoInfo] = []
+    @State private var uiImage: UIImage?
 
     var body: some View {
         ScrollView {
@@ -19,10 +20,30 @@ struct ContentView: View {
             } label: {
                 Text("Fetch")
             }
+            
+            if let uiImage{
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 300)
+            }
 
             ForEach(results, id: \.id){
                 item in
                 Text("\(item.id) \(item.author)")
+                    .onTapGesture {
+                        Task{
+                            do {
+                                let apiService = await APIServiceActor()
+                                if let data = try await apiService.getImageDataByID(item.id){
+                                    uiImage = UIImage(data: data)
+                                }
+                                
+                            } catch {
+                                
+                            }
+                        }
+                    }
             }
         }
         
@@ -37,21 +58,6 @@ struct ContentView: View {
             } catch {
                 print(error.localizedDescription)
             }
-        }
-    }
-
-    private func fetchOneImage(id: String) async -> Data? {
-        do {
-            let request = try URLRequestBuilder()
-                .setBaseURLString(APILink.host.rawValue)
-                .addPathComponents(["id","\(id)","300","200"])
-                .build()
-
-            let data = await networkActor.sendRawRequest(request)
-            return data
-        } catch {
-            print(error.localizedDescription)
-            return nil
         }
     }
 }

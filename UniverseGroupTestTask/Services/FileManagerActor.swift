@@ -1,0 +1,58 @@
+//
+//  FileManagerActor.swift
+//  UniverseGroupTestTask
+//
+//  Created by Слава on 20.11.2025.
+//
+
+import Foundation
+
+actor FileManagerActor {
+    
+    private let fileManager = FileManager.default
+    
+    
+    private func documentsDirectory() -> URL {
+        fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    }
+    
+    
+    func folderExists(named folderName: String) -> Bool {
+        let folderURL = documentsDirectory().appendingPathComponent(folderName)
+        var isDir: ObjCBool = false
+        let exists = fileManager.fileExists(atPath: folderURL.path, isDirectory: &isDir)
+        return exists && isDir.boolValue
+    }
+    
+    func createFolder(named folderName: String) throws {
+        let folderURL = documentsDirectory().appendingPathComponent(folderName)
+        if !folderExists(named: folderName) {
+            try fileManager.createDirectory(at: folderURL, withIntermediateDirectories: true)
+        }
+    }
+    
+    
+    func fileExists(in folderName: String, fileName: String) -> Bool {
+        let fileURL = documentsDirectory()
+            .appendingPathComponent(folderName)
+            .appendingPathComponent(fileName)
+        return fileManager.fileExists(atPath: fileURL.path)
+    }
+    
+    
+    func writeFile(data: Data, to folderName: String, fileName: String) throws {
+        try createFolder(named: folderName) // ensure folder exists
+        let fileURL = documentsDirectory()
+            .appendingPathComponent(folderName)
+            .appendingPathComponent(fileName)
+        try data.write(to: fileURL, options: .atomic)
+    }
+    
+    
+    func readFile(from folderName: String, fileName: String) -> Data? {
+        let fileURL = documentsDirectory()
+            .appendingPathComponent(folderName)
+            .appendingPathComponent(fileName)
+        return try? Data(contentsOf: fileURL)
+    }
+}

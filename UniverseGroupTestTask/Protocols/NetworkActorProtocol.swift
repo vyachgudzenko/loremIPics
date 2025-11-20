@@ -7,6 +7,7 @@
 
 import Foundation
 
-protocol NetworkActorProtocol{
-    func sendRequest<T: Decodable>(_ request: URLRequest, decodeTo type: T.Type) async throws -> T
+protocol NetworkActorProtocol {
+    func sendRequest<T: Decodable & Sendable>(_ request: URLRequest, decodeTo type: T.Type) async throws -> T
+    func sendRawRequest(_ request: URLRequest) async -> Data?
 }

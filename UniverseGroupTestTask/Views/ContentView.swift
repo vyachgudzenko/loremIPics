@@ -10,33 +10,29 @@ import CoreData
 
 struct ContentView: View {
     @State private var results: [PhotoInfo] = []
-    let networkActor = NetworkManagerActor()
-    @State private var loadingIds: Set<String> = [] // чтобы не дергать повторно
 
     var body: some View {
         ScrollView {
             
+            Button {
+                fetchImagesFromServer()
+            } label: {
+                Text("Fetch")
+            }
+
+            ForEach(results, id: \.id){
+                item in
+                Text("\(item.id) \(item.author)")
+            }
         }
-        .onAppear {
-            fetchImagesFromServer()
-        }
+        
     }
 
     private func fetchImagesFromServer() {
         Task {
             do {
-                let request = try URLRequestBuilder()
-                    .setBaseURLString(APILink.host.rawValue)
-                    .addPathComponents(["v2","list"])
-                    .addQueryParameters(
-                        [
-                            "page":"1",
-                            "limit": "5"
-                        ]
-                    )
-                    .build()
-
-                let results = try await networkActor.sendRequest(request, decodeTo: [PhotoInfo].self)
+                let apiService = await APIServiceActor()
+                let results = try await apiService.fetchPhotoInfos()
                 self.results = results
             } catch {
                 print(error.localizedDescription)

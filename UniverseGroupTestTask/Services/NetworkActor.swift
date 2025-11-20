@@ -8,15 +8,15 @@
 import Foundation
 
 actor NetworkManagerActor: NetworkActorProtocol {
-
+    
     private let decoder = JSONDecoder()
-
+    
     // MARK: - JSON request
-    func sendRequest<T: Decodable>(
+    func sendRequest<T: Decodable & Sendable>(
         _ request: URLRequest,
         decodeTo type: T.Type
     ) async throws -> T {
-
+        
         // Try to perform the request
         let (data, response): (Data, URLResponse)
         do {
@@ -29,8 +29,7 @@ actor NetworkManagerActor: NetworkActorProtocol {
             )
         }
         
-        print(String(data: data, encoding: .utf8))
-
+        
         // Validate HTTP response
         guard let http = response as? HTTPURLResponse else {
             throw NSError(
@@ -39,7 +38,7 @@ actor NetworkManagerActor: NetworkActorProtocol {
                 userInfo: [NSLocalizedDescriptionKey: "Invalid server response."]
             )
         }
-
+        
         // Check HTTP status code
         guard (200...299).contains(http.statusCode) else {
             throw NSError(
@@ -48,7 +47,7 @@ actor NetworkManagerActor: NetworkActorProtocol {
                 userInfo: [NSLocalizedDescriptionKey: "Server returned status code: \(http.statusCode)"]
             )
         }
-
+        
         // Decode JSON
         do {
             return try decoder.decode(T.self, from: data)
@@ -60,19 +59,19 @@ actor NetworkManagerActor: NetworkActorProtocol {
             )
         }
     }
-
+    
     // MARK: - Raw Data request (non-throwing)
-        func sendRawRequest(_ request: URLRequest) async -> Data? {
-
-            // Try to load data
-            let (data, _): (Data, URLResponse)
-            do {
-                (data, _) = try await URLSession.shared.data(for: request)
-            } catch {
-                // Network error
-                return nil
-            }
-
-            return data
-        }}
-
+    func sendRawRequest(_ request: URLRequest) async -> Data? {
+        
+        // Try to load data
+        let (data, _): (Data, URLResponse)
+        do {
+            (data, _) = try await URLSession.shared.data(for: request)
+        } catch {
+            // Network error
+            return nil
+        }
+        
+        return data
+    }
+}

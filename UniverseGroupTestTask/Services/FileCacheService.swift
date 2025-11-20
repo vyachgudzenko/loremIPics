@@ -12,10 +12,9 @@ actor CacheService {
 
     private var memoryCache: [String: Data] = [:]
     private let fileManager: FileManagerActor
-    private let folderName: String
+    private let folderName: String = "Cache"
 
-    init(folderName: String = "Cache", fileManager: FileManagerActor = FileManagerActor()) async {
-        self.folderName = folderName
+    init(fileManager: FileManagerActor) async {
         self.fileManager = fileManager
         try? await fileManager.createFolder(named: folderName)
         await loadCacheFromDisk()
@@ -38,7 +37,7 @@ actor CacheService {
         }
 
         if let data = await fileManager.readFile(from: folderName, fileName: name) {
-            memoryCache[name] = data 
+            memoryCache[name] = data
             return data
         }
 

@@ -11,10 +11,13 @@ import UIKit
 actor PhotoOperationRepository{
     private let apiService: any APIServiceProtocol
     private let fileManager: FileManagerActor
+    private let cacheService: CacheService
     
     init() async{
-        apiService = await APIServiceActor()
         fileManager = FileManagerActor()
+        cacheService = await CacheService(fileManager: fileManager)
+        apiService = await APIServiceActor()
+        
     }
     
     func fetchPhotoInfos() async throws -> [PhotoInfo]{
@@ -22,11 +25,22 @@ actor PhotoOperationRepository{
         return result
     }
     
-    func getImageByID(_ id: String,width: Int = 300,height: Int = 200) async throws -> UIImage?{
-        if let data = try await apiService.getImageDataByID(id, width: width, height: height){
-            return  UIImage(data: data)
+    func getImageByID(_ id: String, width: Int = 300, height: Int = 200) async throws -> UIImage? {
+            
+            if let cachedData = await cacheService.getFromCache(name: "\(id)/\(width)/\(height).jpg"),
+               let image = UIImage(data: cachedData) {
+                print("id \("\(id)/\(width)/\(height).jpg")) is in cache")
+                return image
+            }
+            
+            
+            guard let data = try await apiService.getImageDataByID(id, width: width, height: height) else {
+                return nil
+            }
+            
+            await cacheService.addToCache(name: "\(id)/\(width)/\(height).jpg", data: data)
+            
+            return UIImage(data: data)
         }
-        return nil
-    }
 }
 

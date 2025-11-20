@@ -36,4 +36,9 @@ class PhotoInfoViewModel: ObservableObject {
             showError = true
         }
     }
+    
+    func getImageByID(_ id: String, width: Int = 300, height: Int = 200) async throws -> UIImage?{
+        let uiImage = try await repository?.getImageByID(id, width: 300, height: 200)
+        return uiImage
+    }
 }

@@ -1,6 +1,6 @@
-# 📸 Test Task — Photo Browser App
+# 📸 Test Task — Lorem picsum photo loader
 
-A SwiftUI application that loads random photos from the open API **Lorem Picsum** and demonstrates modern iOS development practices using MVVM, Repository Pattern, and Swift Concurrency.
+A SwiftUI application that loads photos from the open API **Lorem Picsum** and demonstrates modern iOS development practices using MVVM, Repository Pattern, and Swift Concurrency.
 
 ---
 

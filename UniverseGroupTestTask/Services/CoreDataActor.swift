@@ -8,7 +8,7 @@
 import Foundation
 @preconcurrency import CoreData
 
-actor CoreDataActor: storageActorProtocol {
+actor CoreDataActor: StorageActorProtocol {
 
     private let container: NSPersistentContainer
     private let context: NSManagedObjectContext

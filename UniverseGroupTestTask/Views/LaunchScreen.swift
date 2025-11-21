@@ -21,7 +21,11 @@ struct LaunchScreen: View {
                 .foregroundStyle(.customBlue)
         }
         .preferredColorScheme(.light)
-         
+        .alert(viewModel.errorMessage, isPresented: $viewModel.showError) {
+            Button("Close") {
+                viewModel.showError = false
+            }
+        }
         .fullScreenCover(isPresented: $viewModel.initialDataLoaded) {
             ContentView()
                 .environmentObject(viewModel)

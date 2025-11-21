@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol storageActorProtocol{
+protocol StorageActorProtocol{
     func getAllFavorites() async -> [FavoriteDTO]
     func saveFavorite(_ dto: FavoriteDTO) async throws
     func deleteFavorite(id: String) async throws

@@ -12,7 +12,7 @@ import Combine
 class PhotoInfoViewModel: ObservableObject {
     
     private var repository:(any RepositoryProtocol)?
-    private var storage: (any storageActorProtocol)?
+    private var storage: (any StorageActorProtocol)?
     
     @Published var photoInfos: [PhotoInfo] = []
     @Published var favorites: [FavoriteDTO] = []

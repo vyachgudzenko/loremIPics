@@ -27,6 +27,11 @@ struct ContentView: View {
                 CustomTabbar(selectedTab: $selectedTabScreen)
             }
         }
+        .alert(viewModel.errorMessage, isPresented: $viewModel.showError) {
+            Button("Close") {
+                viewModel.showError = false
+            }
+        }
         
     }
 }

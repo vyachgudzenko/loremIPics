@@ -37,8 +37,33 @@ class PhotoInfoViewModel: ObservableObject {
         }
     }
     
-    func getImageByID(_ id: String, width: Int = 300, height: Int = 200) async throws -> UIImage?{
-        let uiImage = try await repository?.getImageByID(id, width: 300, height: 200)
+    func getImageByID(_ id: String, width: Int = 300, height: Int = 300) async throws -> UIImage?{
+        let uiImage = try await repository?.getImageByID(id, width: width, height: height)
         return uiImage
+    }
+    
+    func manageFavoriteStateByID(id: String){
+        if isFavorite(id: id){
+            removeFromFavorites(id: id)
+        } else {
+            addToFavorites(id: id)
+        }
+    }
+    
+    private func addToFavorites(id: String){
+        
+    }
+    
+    
+    private func removeFromFavorites(id: String){
+        
+    }
+    
+    func getFavorites(){
+        
+    }
+    
+    func isFavorite(id: String) -> Bool{
+        return false
     }
 }

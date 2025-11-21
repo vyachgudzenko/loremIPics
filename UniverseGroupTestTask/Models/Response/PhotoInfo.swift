@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PhotoInfo: Decodable, Sendable {
+struct PhotoInfo: Decodable, Sendable, PhotoInfoCellProtocol {
     let id: String
     let author: String
     let width: Int

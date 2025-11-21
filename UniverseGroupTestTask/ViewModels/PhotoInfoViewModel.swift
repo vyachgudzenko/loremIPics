@@ -19,6 +19,7 @@ class PhotoInfoViewModel: ObservableObject {
     
     @Published var errorMessage: String = "Error loading photo info"
     @Published var showError: Bool = false
+    @Published var initialDataLoaded: Bool = false
     
     init() {
         Task { [weak self] in
@@ -31,11 +32,13 @@ class PhotoInfoViewModel: ObservableObject {
         }
     }
     
-    private func loadInitialData() async {
+    func loadInitialData() async {
+        print("loading data start")
         guard let repository else { return }
         do {
             let infos = try await repository.fetchPhotoInfos()
             self.photoInfos = infos
+            self.initialDataLoaded = true
         } catch {
             errorMessage = error.localizedDescription
             showError = true

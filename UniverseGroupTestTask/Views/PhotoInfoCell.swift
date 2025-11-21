@@ -14,7 +14,6 @@ struct PhotoInfoCell: View {
     
     var body: some View {
         ZStack{
-            Color.red
             if let uiImage = uiImage {
                 Image(uiImage: uiImage)
                     .resizable()

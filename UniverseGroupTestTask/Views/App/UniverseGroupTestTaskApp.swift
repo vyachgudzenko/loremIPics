@@ -10,12 +10,10 @@ import CoreData
 
 @main
 struct UniverseGroupTestTaskApp: App {
-    @StateObject private var viewModel = PhotoInfoViewModel()
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environmentObject(viewModel)
+            LaunchScreen()
         }
     }
 }

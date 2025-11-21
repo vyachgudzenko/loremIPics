@@ -21,15 +21,17 @@ struct PhotoInfoCell: View {
                     .aspectRatio(contentMode: .fill)
                     .overlay(alignment: .topTrailing) {
                         Button {
-                            viewModel.manageFavoriteStateByID(id: photoInfo.id)
+                            Task{
+                               await viewModel.manageFavoriteStateByID(id: photoInfo.idForPhotoCell)
+                            }
                         } label: {
-                            let isFavorite = viewModel.isFavorite(id: photoInfo.id)
+                            let isFavorite = viewModel.isFavorite(id: photoInfo.idForPhotoCell)
                             Image( "Bookmark_fill")
                                 .resizable()
                                 .renderingMode(.template)
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 30)
-                                .foregroundStyle(isFavorite ? .customLightBlue : .customLightGray)
+                                .foregroundStyle(isFavorite ? .customBlue : .customLightGray)
                             
                                 .padding(.all, 10)
                         }
@@ -49,7 +51,7 @@ struct PhotoInfoCell: View {
         }
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .task {
-            uiImage = try? await viewModel.getImageByID(photoInfo.id)
+            uiImage = try? await viewModel.getImageByID(photoInfo.idForPhotoCell)
         }
     }
 }

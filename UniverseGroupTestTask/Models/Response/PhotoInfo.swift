@@ -15,6 +15,10 @@ struct PhotoInfo: Decodable, Sendable, PhotoInfoCellProtocol {
     let url: String
     let downloadURL: String
     
+    var idForPhotoCell: String{
+        return id
+    }
+    
     enum CodingKeys: String, CodingKey {
         case id, author, width, height, url
         case downloadURL = "download_url"

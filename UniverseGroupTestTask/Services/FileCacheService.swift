@@ -14,8 +14,8 @@ actor CacheService: CacheServiceProtocol {
     private let fileManager: any FileManagerActorProtocol
     private let folderName: String = "Cache"
 
-    init(fileManager: any FileManagerActorProtocol) async {
-        self.fileManager = fileManager
+    init() async {
+        self.fileManager = await FileManagerActor()
         try? await fileManager.createFolder(named: folderName)
         await loadCacheFromDisk()
     }

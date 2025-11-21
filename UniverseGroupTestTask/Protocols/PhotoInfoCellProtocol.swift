@@ -8,5 +8,5 @@
 import Foundation
 
 protocol PhotoInfoCellProtocol{
-    var id: String { get }
+    var idForPhotoCell: String { get }
 }

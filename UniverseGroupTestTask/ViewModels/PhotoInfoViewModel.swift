@@ -11,9 +11,11 @@ import Combine
 @MainActor
 class PhotoInfoViewModel: ObservableObject {
     
-    private var repository: PhotoOperationRepository?
+    private var repository:(any RepositoryProtocol)?
+    private var storage: (any storageActorProtocol)?
     
     @Published var photoInfos: [PhotoInfo] = []
+    @Published var favorites: [FavoriteDTO] = []
     
     @Published var errorMessage: String = "Error loading photo info"
     @Published var showError: Bool = false
@@ -22,7 +24,10 @@ class PhotoInfoViewModel: ObservableObject {
         Task { [weak self] in
             let repo = await PhotoOperationRepository()
             self?.repository = repo
+            let coreData = await CoreDataActor()
+            self?.storage = coreData
             await self?.loadInitialData()
+            await self?.getFavorites()
         }
     }
     
@@ -42,28 +47,49 @@ class PhotoInfoViewModel: ObservableObject {
         return uiImage
     }
     
-    func manageFavoriteStateByID(id: String){
+    func manageFavoriteStateByID(id: String) async {
         if isFavorite(id: id){
-            removeFromFavorites(id: id)
+           await removeFromFavorites(id: id)
         } else {
-            addToFavorites(id: id)
+           await addToFavorites(id: id)
         }
     }
     
-    private func addToFavorites(id: String){
+    private func addToFavorites(id: String) async{
+        guard let coreDataService = storage else { return }
+        let dto = FavoriteDTO(id: id, createAt: Date())
+        do{
+           try await coreDataService.saveFavorite(dto)
+            favorites.append(dto)
+        } catch {
+            errorMessage = error.localizedDescription
+            showError = true
+        }
         
     }
     
     
-    private func removeFromFavorites(id: String){
-        
+    private func removeFromFavorites(id: String) async{
+        guard let coreDataService = storage else { return }
+        do{
+            try await coreDataService.deleteFavorite(id: id)
+            withAnimation(.bouncy){
+                favorites.removeAll(where: { $0.id == id })
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+            showError = true
+        }
     }
     
-    func getFavorites(){
-        
+    func getFavorites() async{
+        guard let coreDataService = storage else { return }
+        let results = await coreDataService.getAllFavorites()
+        favorites = results
     }
     
     func isFavorite(id: String) -> Bool{
-        return false
+        return favorites.contains(where: { $0.id == id })
+        
     }
 }

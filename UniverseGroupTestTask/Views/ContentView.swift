@@ -16,12 +16,6 @@ struct ContentView: View {
     var body: some View {
         ScrollView {
             
-            Button {
-                fetchImagesFromServer()
-            } label: {
-                Text("Fetch")
-            }
-            
             if let uiImage{
                 Image(uiImage: uiImage)
                     .resizable()
@@ -29,15 +23,15 @@ struct ContentView: View {
                     .frame(width: 300)
             }
 
-            ForEach(results, id: \.id){
+            ForEach(viewModel.photoInfos, id: \.id){
                 item in
                 Text("\(item.id) \(item.author)")
                     .onTapGesture {
                         Task{
                             do {
-                                let apiService = await APIServiceActor()
-                                if let data = try await apiService.getImageDataByID(item.id){
-                                    uiImage = UIImage(data: data)
+                                
+                                if let uiImage = try await viewModel.getImageByID(item.id){
+                                    self.uiImage = uiImage
                                 }
                                 
                             } catch {

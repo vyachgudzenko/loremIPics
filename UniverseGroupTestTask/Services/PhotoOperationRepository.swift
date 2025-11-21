@@ -26,8 +26,8 @@ actor PhotoOperationRepository{
     }
     
     func getImageByID(_ id: String, width: Int = 300, height: Int = 200) async throws -> UIImage? {
-            
-            if let cachedData = await cacheService.getFromCache(name: "\(id)/\(width)/\(height).jpg"),
+        let fileName = "\(id)_\(width)x\(height).jpg"
+            if let cachedData = await cacheService.getFromCache(name: fileName),
                let image = UIImage(data: cachedData) {
                 print("id \("\(id)/\(width)/\(height).jpg")) is in cache")
                 return image
@@ -38,7 +38,8 @@ actor PhotoOperationRepository{
                 return nil
             }
             
-            await cacheService.addToCache(name: "\(id)/\(width)/\(height).jpg", data: data)
+            
+            await cacheService.addToCache(name: fileName, data: data)
             
             return UIImage(data: data)
         }

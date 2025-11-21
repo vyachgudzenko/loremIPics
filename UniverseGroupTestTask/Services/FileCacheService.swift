@@ -8,19 +8,18 @@
 import Foundation
 import UIKit
 
-actor CacheService {
+actor CacheService: CacheServiceProtocol {
 
     private var memoryCache: [String: Data] = [:]
-    private let fileManager: FileManagerActor
+    private let fileManager: any FileManagerActorProtocol
     private let folderName: String = "Cache"
 
-    init(fileManager: FileManagerActor) async {
+    init(fileManager: any FileManagerActorProtocol) async {
         self.fileManager = fileManager
         try? await fileManager.createFolder(named: folderName)
         await loadCacheFromDisk()
     }
 
-    
     func addToCache(name: String, data: Data) async {
         memoryCache[name] = data
         do {
@@ -30,7 +29,6 @@ actor CacheService {
         }
     }
 
-    
     func getFromCache(name: String) async -> Data? {
         if let data = memoryCache[name] {
             return data
@@ -44,9 +42,8 @@ actor CacheService {
         return nil
     }
 
-    
-    private func loadCacheFromDisk() async {
-        
+    // Exposed to satisfy protocol requirement
+    func loadCacheFromDisk() async {
         let files = await fileManager.listFiles(in: folderName)
         for fileURL in files {
             let name = fileURL.lastPathComponent

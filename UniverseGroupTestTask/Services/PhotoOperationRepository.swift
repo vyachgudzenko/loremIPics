@@ -10,11 +10,11 @@ import UIKit
 
 actor PhotoOperationRepository{
     private let apiService: any APIServiceProtocol
-    private let fileManager: FileManagerActor
-    private let cacheService: CacheService
+    private let fileManager: any FileManagerActorProtocol
+    private let cacheService: any CacheServiceProtocol
     
     init() async{
-        fileManager = FileManagerActor()
+        fileManager = await FileManagerActor() 
         cacheService = await CacheService(fileManager: fileManager)
         apiService = await APIServiceActor()
         

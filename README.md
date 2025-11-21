@@ -33,7 +33,7 @@ A SwiftUI application that loads random photos from the open API **Lorem Picsum*
 
 ## 📦 Requirements
 
-- iOS 17+
+- iOS 16+
 - Xcode 15+
 - Swift 5.9+
 
